@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SWU U17 — Set Piece Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --green:   #1A6B3C;
+  --green2:  #16a349;
+  --greenl:  #e8f4ee;
+  --gold:    #C9A227;
+  --goldl:   #fdf6e3;
+  --purple:  #6B2D8B;
+  --purplel: #f4edf8;
+  --blue:    #1A4A8A;
+  --bluel:   #edf2fb;
+  --red:     #B22222;
+  --redl:    #fdf0f0;
+  --dark:    #0f1a12;
+  --mid:     #1e3a24;
+  --field:   #1a4a28;
+  --field2:  #1e5430;
+  --line:    rgba(255,255,255,0.55);
+  --txt:     #e8f0ea;
+  --txtd:    #a8bfab;
+}
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html { font-size:16px; }
+body {
+  font-family:'Barlow',sans-serif;
+  background:var(--dark);
+  color:var(--txt);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── HEADER ── */
+.site-header {
+  background:linear-gradient(135deg,#0a1a0e 0%,#1e3a24 100%);
+  border-bottom:3px solid var(--green);
+  padding:1.5rem 2rem 1.2rem;
+  display:flex; align-items:center; gap:1.5rem;
+  position:sticky; top:0; z-index:100;
+}
+.logo-badge {
+  width:52px; height:52px; border-radius:50%;
+  background:var(--green);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:900; font-size:1.1rem; color:#fff;
+  flex-shrink:0; letter-spacing:-0.5px;
+  box-shadow:0 0 0 3px rgba(26,107,60,0.35);
+}
+.header-text h1 {
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:900; font-size:1.6rem; letter-spacing:0.5px;
+  line-height:1; color:#fff;
+}
+.header-text p { font-size:0.78rem; color:var(--txtd); margin-top:2px; letter-spacing:0.8px; text-transform:uppercase; }
+
+/* ── NAV TABS ── */
+.nav-scroll {
+  display:flex; gap:0; overflow-x:auto;
+  border-bottom:2px solid rgba(255,255,255,0.08);
+  background:#0f1a12;
+  scrollbar-width:none;
+}
+.nav-scroll::-webkit-scrollbar { display:none; }
+.nav-tab {
+  flex-shrink:0;
+  padding:0.75rem 1.3rem;
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700; font-size:0.88rem; letter-spacing:1px;
+  text-transform:uppercase; cursor:pointer;
+  border:none; background:transparent; color:var(--txtd);
+  border-bottom:3px solid transparent; margin-bottom:-2px;
+  transition:all 0.18s;
+}
+.nav-tab:hover { color:#fff; background:rgba(255,255,255,0.04); }
+.nav-tab.active { color:#fff; border-bottom-color:var(--tab-color, var(--green)); }
+
+/* ── CONTENT PANES ── */
+.pane { display:none; padding:1.5rem 1.5rem 3rem; max-width:1000px; margin:0 auto; }
+.pane.active { display:block; animation:fadeIn 0.25s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SECTION HEADER ── */
+.section-hdr {
+  display:flex; align-items:center; gap:1rem;
+  margin-bottom:1.2rem;
+  padding-bottom:0.8rem;
+  border-bottom:3px solid var(--accent-color);
+}
+.section-hdr h2 {
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:900; font-size:1.8rem; letter-spacing:0.5px; line-height:1;
+  color:var(--accent-color);
+}
+.section-desc {
+  font-size:0.88rem; color:var(--txtd); line-height:1.6;
+  margin-bottom:1.4rem;
+}
+
+/* ── FIELD DIAGRAM ── */
+.diagram-wrap {
+  position:relative;
+  border-radius:8px; overflow:hidden;
+  border:2px solid rgba(255,255,255,0.1);
+  margin-bottom:1.4rem;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+.diagram-wrap svg { display:block; width:100%; height:auto; }
+
+/* ── PLAYER HIGHLIGHT INTERACTION ── */
+.player-dot { cursor:pointer; transition:transform 0.15s; }
+.player-dot:hover > circle:first-child { filter:brightness(1.3); }
+.player-dot.highlighted > circle:first-child { stroke-width:4 !important; }
+.player-dot.dimmed { opacity:0.2; }
+
+/* ── INFO PANEL ── */
+.info-panel {
+  background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.1);
+  border-left:4px solid var(--accent-color);
+  border-radius:0 8px 8px 0;
+  padding:1rem 1.2rem;
+  margin-bottom:1.2rem;
+  min-height:80px;
+  transition:all 0.2s;
+}
+.info-panel .player-num {
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:900; font-size:2.2rem; line-height:1;
+  color:var(--accent-color);
+}
+.info-panel .player-role {
+  font-weight:600; font-size:0.95rem; text-transform:uppercase;
+  letter-spacing:0.8px; margin-bottom:0.6rem; color:#fff;
+}
+.info-panel ul { list-style:none; padding:0; }
+.info-panel ul li {
+  font-size:0.83rem; color:var(--txtd); line-height:1.5;
+  padding:0.25rem 0; border-bottom:1px solid rgba(255,255,255,0.05);
+  display:flex; gap:0.5rem;
+}
+.info-panel ul li::before { content:"—"; color:var(--accent-color); flex-shrink:0; }
+.info-panel ul li:last-child { border-bottom:none; }
+.info-hint {
+  font-size:0.78rem; color:rgba(255,255,255,0.3);
+  text-align:center; font-style:italic; padding:1.5rem;
+}
+
+/* ── PLAYER GRID (all roles) ── */
+.player-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:0.75rem; margin-top:1rem;
+}
+.player-card {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px; padding:0.85rem 1rem;
+  cursor:pointer; transition:all 0.18s;
+}
+.player-card:hover { background:rgba(255,255,255,0.07); border-color:rgba(255,255,255,0.18); transform:translateY(-1px); }
+.player-card.selected { border-color:var(--accent-color); background:rgba(255,255,255,0.06); }
+.pc-head { display:flex; align-items:center; gap:0.7rem; margin-bottom:0.5rem; }
+.pc-num {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--accent-color);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:800; font-size:1rem; color:#fff; flex-shrink:0;
+}
+.pc-role { font-weight:600; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.6px; color:#fff; }
+.pc-duties { font-size:0.78rem; color:var(--txtd); line-height:1.5; }
+.pc-duties li { margin-left:0.8rem; margin-bottom:0.2rem; }
+
+/* ── NOTES BOX ── */
+.notes-box {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.1);
+  border-left:4px solid var(--accent-color);
+  border-radius:0 8px 8px 0;
+  padding:1rem 1.2rem;
+  margin-top:1.2rem;
+}
+.notes-box h4 {
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700; font-size:0.9rem; text-transform:uppercase;
+  letter-spacing:1px; color:var(--accent-color); margin-bottom:0.6rem;
+}
+.notes-box ul { list-style:none; }
+.notes-box ul li {
+  font-size:0.82rem; color:var(--txtd); line-height:1.5;
+  padding:0.2rem 0; display:flex; gap:0.5rem;
+}
+.notes-box ul li::before { content:"⚡"; flex-shrink:0; }
+
+/* ── TOGGLE BUTTONS ── */
+.toggle-group {
+  display:flex; gap:0.5rem; margin-bottom:1.2rem; flex-wrap:wrap;
+}
+.toggle-btn {
+  padding:0.4rem 0.9rem;
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700; font-size:0.82rem; letter-spacing:0.8px; text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.15); border-radius:4px;
+  background:rgba(255,255,255,0.04); color:var(--txtd); cursor:pointer; transition:all 0.15s;
+}
+.toggle-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+.toggle-btn.active { background:var(--accent-color); border-color:var(--accent-color); color:#fff; }
+
+/* ── WALL TABLE ── */
+.wall-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+.wall-table th { background:var(--blue); color:#fff; padding:0.55rem 0.8rem; text-align:left; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.9rem; letter-spacing:0.6px; text-transform:uppercase; }
+.wall-table td { padding:0.5rem 0.8rem; border-bottom:1px solid rgba(255,255,255,0.06); color:var(--txtd); }
+.wall-table tr:nth-child(even) td { background:rgba(255,255,255,0.03); }
+.wall-table .wcount { color:var(--blue); font-weight:700; text-align:center; font-size:0.95rem; }
+
+/* ── TRANSITION ── */
+.trans-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+.trans-card { border-radius:8px; padding:1rem 1.2rem; }
+.trans-card.win { background:rgba(26,107,60,0.15); border:1px solid rgba(26,107,60,0.3); }
+.trans-card.lose { background:rgba(178,34,34,0.12); border:1px solid rgba(178,34,34,0.3); }
+.trans-card h4 { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1rem; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:0.6rem; }
+.trans-card.win h4 { color:var(--green2); }
+.trans-card.lose h4 { color:var(--red); }
+.trans-card ul { list-style:none; }
+.trans-card ul li { font-size:0.82rem; color:var(--txtd); padding:0.22rem 0; display:flex; gap:0.5rem; line-height:1.4; }
+.trans-card.win li::before { content:"▶"; color:var(--green); font-size:0.65rem; padding-top:2px; flex-shrink:0; }
+.trans-card.lose li::before { content:"▶"; color:var(--red); font-size:0.65rem; padding-top:2px; flex-shrink:0; }
+
+@media(max-width:600px) {
+  .trans-grid { grid-template-columns:1fr; }
+  .player-grid { grid-template-columns:1fr; }
+  .site-header { padding:1rem; gap:0.8rem; }
+  .header-text h1 { font-size:1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo-badge">SWU</div>
+  <div class="header-text">
+    <h1>SET PIECE PLAYER GUIDE</h1>
+    <p>Under 17 Boys · Tier 1 (2009) · Outdoor 2026</p>
+  </div>
+</header>
+
+<div class="nav-scroll" id="navTabs">
+  <button class="nav-tab active" data-pane="def-corners" style="--tab-color:#1A6B3C">🛡 Def. Corners</button>
+  <button class="nav-tab" data-pane="atk-corners" style="--tab-color:#6B2D8B">⚽ Atk. Corners</button>
+  <button class="nav-tab" data-pane="freekick" style="--tab-color:#C9A227">🎯 Free Kicks</button>
+  <button class="nav-tab" data-pane="wall" style="--tab-color:#1A4A8A">🧱 Wall Build</button>
+  <button class="nav-tab" data-pane="transition" style="--tab-color:#B22222">⚡ Transition</button>
+</div>
+
+<div class="pane active" id="pane-def-corners" style="--accent-color:#1A6B3C">
+  <div class="section-hdr"><h2>DEFENDING CORNER KICKS</h2></div>
+  <p class="section-desc">Tap any player number on the diagram to see their role and responsibilities.</p>
+  <div class="toggle-group">
+    <button class="toggle-btn active" onclick="showDefDiagram('base',this)">Base Setup</button>
+    <button class="toggle-btn" onclick="showDefDiagram('short',this)">Adapt to Short</button>
+  </div>
+  <div class="diagram-wrap" id="def-diagram"></div>
+  <div class="info-panel" id="def-info"><p class="info-hint">Tap a player number on the diagram above to see their role</p></div>
+  <div class="player-grid" id="def-grid"></div>
+  <div class="notes-box">
+    <h4>Key Principles</h4>
+    <ul>
+      <li>Ball CANNOT drop anywhere in the 18-yard box — every player owns their zone</li>
+      <li>CALL THE BALL — once you name it, it is yours. Say 'MINE' loud and clear</li>
+      <li>All clearances: UP, OUT, AWAY — never head it back toward goal</li>
+      <li>Man markers (#9 and #10): disrupt runners — don't let them get clean runs</li>
+      <li>We do NOT send #4 to press until the ball is actually played short</li>
+    </ul>
+  </div>
+</div>
+
+<div class="pane" id="pane-atk-corners" style="--accent-color:#6B2D8B">
+  <div class="section-hdr"><h2>ATTACKING CORNER KICKS</h2></div>
+  <p class="section-desc">Tap any player to see their role. #5 is the blocker — the key to this system.</p>
+  <div class="diagram-wrap" id="atk-diagram"></div>
+  <div class="info-panel" id="atk-info"><p class="info-hint">Tap a player number on the diagram above</p></div>
+  <div class="player-grid" id="atk-grid"></div>
+  <div class="notes-box">
+    <h4>Key Principles</h4>
+    <ul>
+      <li>Only #10 and #11 know the variation — everyone else executes identically every time</li>
+      <li>#5 (Blocker): screen defenders legally — use your body, no obvious fouling</li>
+      <li>#6 is the primary target — use the blocker to create your space</li>
+      <li>#2 and #4: stay high — we WILL get caught on transition if you enter the box</li>
+      <li>#3: if the ball isn't played to you, sprint to the penalty arc for second balls</li>
+    </ul>
+  </div>
+</div>
+
+<div class="pane" id="pane-freekick" style="--accent-color:#C9A227">
+  <div class="section-hdr"><h2>ATTACKING FREE KICKS — ZONE 4</h2></div>
+  <p class="section-desc">Two options: Option A is #8→#10→#9 timed run. Option B is #10 spins and shoots. #8 can take quick kick if on.</p>
+  <div class="diagram-wrap" id="fk-diagram"></div>
+  <div class="info-panel" id="fk-info"><p class="info-hint">Tap a player number on the diagram above</p></div>
+  <div class="player-grid" id="fk-grid"></div>
+  <div class="notes-box">
+    <h4>Key Principles</h4>
+    <ul>
+      <li>#8 has full authority to take a quick kick if the defense is not set — do it</li>
+      <li>#9's timing is everything — arrive just as the ball does, not a second before</li>
+      <li>#5 and #6 must hold their wall positions until the ball is struck</li>
+      <li>HIT THE TARGET — a shot on goal always gives us a chance</li>
+      <li>#7 and #11: stay alert for rebounds — second balls win games</li>
+    </ul>
+  </div>
+</div>
+
+<div class="pane" id="pane-wall" style="--accent-color:#1A4A8A">
+  <div class="section-hdr"><h2>WALL CONSTRUCTION</h2></div>
+  <p class="section-desc">The GK organizes. Field players respond immediately. Numbers in the diagram indicate recommended wall size by zone.</p>
+  <div class="diagram-wrap" id="wall-diagram"></div>
+  <h3 style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:0.5px;margin:1.2rem 0 0.6rem;color:var(--blue)">WALL SIZE BY ZONE</h3>
+  <table class="wall-table">
+    <thead><tr><th>Location / Zone</th><th style="text-align:center">Wall Size</th></tr></thead>
+    <tbody>
+      <tr><td>Right at the corner flag (CK zone)</td><td class="wcount">3</td></tr>
+      <tr><td>Wide channels, near corner</td><td class="wcount">3–4</td></tr>
+      <tr><td>Wide, inside 35 yards</td><td class="wcount">4–5</td></tr>
+      <tr><td>Edge of 18-yard box</td><td class="wcount">5</td></tr>
+      <tr><td>Central, just outside the box</td><td class="wcount">5+</td></tr>
+      <tr><td>Central, tight to box (danger zone)</td><td class="wcount">5+</td></tr>
+      <tr><td>Central, penalty arc</td><td class="wcount">5+</td></tr>
+      <tr><td>Wide channels, inside 20 yards</td><td class="wcount">4–5</td></tr>
+      <tr><td>Tight wide angle</td><td class="wcount">3–4</td></tr>
+    </tbody>
+  </table>
+  <div class="notes-box" style="margin-top:1.2rem">
+    <h4>Wall Principles</h4>
+    <ul>
+      <li>GK is ALWAYS the primary organizer — field players respond immediately</li>
+      <li>Tallest players in the center of the wall, decreasing height toward the edges</li>
+      <li>Wall alignment: ball → near post — blocks the most direct shot</li>
+      <li>The player in front of the ball WALKS BACKWARD — do not sprint or turn; buy time</li>
+      <li>Once GK calls 'WALL SET' — hold absolutely still. No peeking.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="pane" id="pane-transition" style="--accent-color:#B22222">
+  <div class="section-hdr"><h2>TRANSITION AFTER SET PIECES</h2></div>
+  <p class="section-desc">Every set piece ends with a transition. Be ready BEFORE the set piece ends — ball-watching is where goals are conceded.</p>
+  <div class="trans-grid">
+    <div class="trans-card win">
+      <h4>✓ If We Win Possession</h4>
+      <ul>
+        <li>Play quickly — attack before they recover shape</li>
+        <li>#11: hold width, be a threat in behind</li>
+        <li>#2 and #4: push up and support the attack</li>
+        <li>First pass: away from pressure, into space</li>
+        <li>If it breaks wide, attack the channel immediately</li>
+      </ul>
+    </div>
+    <div class="trans-card lose">
+      <h4>✗ If We Lose Possession</h4>
+      <ul>
+        <li>Immediately get goal-side — do not chase the ball</li>
+        <li>Players in box: sprint back into defensive shape</li>
+        <li>Defensive players: press the counter immediately</li>
+        <li>GK: communicate — call 'COUNTER' so everyone reacts</li>
+        <li>Recover to shape — don't ball-watch</li>
+      </ul>
+    </div>
+  </div>
+  <div class="notes-box" style="margin-top:1.2rem">
+    <h4>The Golden Rule</h4>
+    <ul>
+      <li>The moment of transition is when teams are most vulnerable — be mentally ready before the set piece ends</li>
+      <li>The first 3 seconds after a set piece are the most dangerous — reaction speed wins or loses games</li>
+      <li>Communicate immediately — everyone must know whether we are attacking or defending</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const DEF_ROLES = {
+  1:  {role:"Goalkeeper",            duties:["Command your box — 'OUT' or 'AWAY' calls constantly","Deal with any ball in the 6-yard box","Organize field players before the corner is taken","Position slightly off-center to cover near-post balls"]},
+  2:  {role:"Near Post Guard",       duties:["Cover the near post — body on or inside the post","Clear any ball in front of the near post","DO NOT leave post until ball is fully cleared"]},
+  3:  {role:"Far Post Guard",        duties:["Cover the far post — stop anything past the GK","DO NOT leave post until ball is fully cleared","Communicate with GK on any drifting cross"]},
+  4:  {role:"Zonal Leader",          duties:["First zonal position — closest to ball side","Clear all balls in your zone: UP, OUT, AWAY","If opponent plays short: SPRINT to press ball carrier toward endline","We do NOT send you until ball is actually played short — wait and react"]},
+  5:  {role:"Zonal Midfielder",      duties:["Hold your zonal position — second line of defense","Clear any ball past Player 4 or in your zone","Short corner: step up one position into #4's zone"]},
+  6:  {role:"Zonal Midfielder",      duties:["Hold your zonal position — third defender in zonal line","Clear any ball entering your zone","Short corner: step up one position into #5's zone"]},
+  7:  {role:"Zonal Midfielder",      duties:["Hold your central/far-side zonal position","Clear any ball into your zone","Short corner: move to central zone to close the gap"]},
+  8:  {role:"Zonal Midfielder",      duties:["Hold position on edge of zonal block","Clear any ball reaching your zone","Short corner: drop into #6's position to maintain coverage"]},
+  9:  {role:"Man Marker",            duties:["Assignment set by coach based on opponent's dangerous attackers","Disrupt and neutralize your assigned attacker — no free runs","Stay goal-side and body-up at all times"]},
+  10: {role:"Man Marker",            duties:["Assignment set by coach based on opponent's dangerous attackers","Disrupt and neutralize your assigned attacker — no free runs","Stay goal-side and body-up at all times"]},
+  11: {role:"High Press / Counter",  duties:["Stay HIGH — do NOT drop into the defensive block","Position yourself to receive a long clearance","Be a counter-attack threat — your pace is a weapon"]},
+};
+
+const ATK_ROLES = {
+  2:  {role:"Defensive Cover",       duties:["STAY HIGH — defend against counter-attack threats","Goal-side of their highest player","Do NOT enter the box"]},
+  3:  {role:"Top-of-Box / Garbage",  duties:["Run to top of box as corner is taken — safety outlet","If ball isn't played to you: sprint to penalty arc for second balls","You are the 'garbage collector' — any loose ball at the arc is yours"]},
+  4:  {role:"Defensive Cover",       duties:["Pair with #2 against counter-attack threats","One in front, one in behind their highest attacker","Hold your position until ball is won or danger is clear"]},
+  5:  {role:"BLOCKER ⭐",            duties:["You are the blocker — this is your most important role","Screen defenders from reaching our runners — legally","No obvious pushing; use your body to create space","Primary target to assist: Player 6","Stay in blocking position until play is dead"]},
+  6:  {role:"Primary Target Runner", duties:["You are the primary scoring target — use the blocker (#5) to get free","Time your run to arrive just as the ball does — not before","Attack the ball aggressively — near-post flick-on or shot","If blocked: peel to back post for secondary chance"]},
+  7:  {role:"Box Runner",            duties:["Aggressive run into box — attack far post if cross goes long","Back post for rebounds if ball doesn't reach you","Alert for deflections off GK or defenders"]},
+  8:  {role:"Box Runner",            duties:["Run into box from your starting position","If a quick free kick is available — TAKE IT","Otherwise join the attacking runners"]},
+  9:  {role:"Box Runner",            duties:["Aggressive run targeting the near-post zone","Attack the ball early — create chaos for the GK","Box presence and aggression wins corners — be physical"]},
+  10: {role:"Corner Taker",          duties:["Always line up with #11 at the corner flag","Only you and #11 know which variation is being played","Deliver with pace and curve to the target zone"]},
+  11: {role:"Second Kicker / Option",duties:["Always line up with #10 at the corner flag","You and #10 share knowledge of the variation — no one else needs to know","If short variation: make yourself available for the pass","If cross variation: act as dummy runner"]},
+};
+
+const FK_ROLES = {
+  2:  {role:"Defensive Anchor",      duties:["Stay at the halfway line — do NOT advance","Goal-side of their highest player at all times","Last line of defense against quick counter-attack"]},
+  3:  {role:"Counter Threat",        duties:["Position to receive a through ball if things break down","Ready to shoot from outside box if defense vacates","Track back immediately if we lose possession"]},
+  4:  {role:"Second Ball Winner",    duties:["Position on edge of the 18-yard box","Win second balls from opposition clearances","When ball is struck: move to where clearances will fall"]},
+  5:  {role:"Wall Disruptor (Left)", duties:["Position on LEFT side of the opposition wall","Stop wall defenders from charging or blocking our shot","On shot: charge to deflect or block clearances"]},
+  6:  {role:"Wall Disruptor (Right)",duties:["Position on RIGHT side of the opposition wall","Stop wall defenders from charging or blocking our shot","On shot: charge to deflect or block clearances"]},
+  7:  {role:"Rebound Specialist",    duties:["Position at far post area","First to react to rebounds off GK or post","Finish half-chances — shoot immediately with no hesitation"]},
+  8:  {role:"Quick Kick / Distributor",duties:["FIRST: Is a quick kick available and smart? Take it immediately","SECOND: If not, pass to #10 to set up the routine","You are the decision-maker — read the defense"]},
+  9:  {role:"Timed Runner / Shooter",duties:["Time your run to meet #10's pass BEFORE wall can close","Strike first time — on target, no hesitation","HIT THE TARGET — a shot on goal always gives us a chance"]},
+  10: {role:"Set Piece Controller",  duties:["Receive from #8 and set precisely for #9's run","Option B: spin and shoot yourself if #9 is covered","Be decisive — hesitation lets the wall set and close angles"]},
+  11: {role:"Rebound / Blocker",     duties:["Position at near post area","Attack any rebound — first or second chance","Block clearance attempts to keep ball in danger zone"]},
+};
+
+const W=760, H=532;
+const FX=30,FY=30,FW=W-60,FH=H-60;
+const PW=FW/68.0, PH=FH/52.5;
+const BOX_W=40.32,BOX_D=16.5,SIX_W=18.32,SIX_D=5.5;
+const PEN_D=11.0,ARC_R=9.15,GOAL_W=7.32;
+function fx(p){ return FX+FW*p; }
+function fy(p){ return FY+FH*p; }
+function mw(m){ return m*PW; }
+function mh(m){ return m*PH; }
+const lc="rgba(255,255,255,0.55)";
+
+function fieldBase(){
+  let s='<rect width="' + W + '" height="' + H + '" fill="#1c5230"/>';
+  for(let i=0;i<12;i++) s+='<rect x="' + FX + '" y="' + (FY+i*46) + '" width="' + FW + '" height="23" fill="rgba(255,255,255,0.028)"/>';
+  s+='<rect x="' + FX + '" y="' + FY + '" width="' + FW + '" height="' + FH + '" fill="none" stroke="' + lc + '" stroke-width="2"/>';
+  return s;
+}
+
+function cornerArcs(goalEnd){
+  const crx=mw(2), cry=mh(2);
+  const x0=FX, x1=FX+FW, y0=FY, y1=FY+FH;
+  if(goalEnd==='bottom'){
+    return '<path d="M ' + x0 + ',' + (y1-cry).toFixed(2) + ' A ' + crx.toFixed(2) + ',' + cry.toFixed(2) + ' 0 0,1 ' + (x0+crx).toFixed(2) + ',' + y1 + '" fill="none" stroke="' + lc + '" stroke-width="1.5"/>' +
+           '<path d="M ' + (x1-crx).toFixed(2) + ',' + y1 + ' A ' + crx.toFixed(2) + ',' + cry.toFixed(2) + ' 0 0,1 ' + x1 + ',' + (y1-cry).toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="1.5"/>';
+  } else {
+    return '<path d="M ' + (x0+crx).toFixed(2) + ',' + y0 + ' A ' + crx.toFixed(2) + ',' + cry.toFixed(2) + ' 0 0,0 ' + x0 + ',' + (y0+cry).toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="1.5"/>' +
+           '<path d="M ' + x1 + ',' + (y0+cry).toFixed(2) + ' A ' + crx.toFixed(2) + ',' + cry.toFixed(2) + ' 0 0,0 ' + (x1-crx).toFixed(2) + ',' + y0 + '" fill="none" stroke="' + lc + '" stroke-width="1.5"/>';
+  }
+}
+
+function penaltyD(goalEnd){
+  const cx=fx(0.5), rx=ARC_R*PW, ry=ARC_R*PH;
+  if(goalEnd==="bottom"){
+    const boxTop=fy(1)-mh(BOX_D), penCy=fy(1)-mh(PEN_D);
+    const dy=boxTop-penCy, dx=rx*Math.sqrt(Math.max(0,1-(dy/ry)**2));
+    return '<path d="M ' + (cx-dx).toFixed(2) + ',' + boxTop.toFixed(2) + ' A ' + rx.toFixed(2) + ',' + ry.toFixed(2) + ' 0 0,1 ' + (cx+dx).toFixed(2) + ',' + boxTop.toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="2"/>';
+  } else {
+    const boxBot=fy(0)+mh(BOX_D), penCy=fy(0)+mh(PEN_D);
+    const dy=boxBot-penCy, dx=rx*Math.sqrt(Math.max(0,1-(dy/ry)**2));
+    return '<path d="M ' + (cx-dx).toFixed(2) + ',' + boxBot.toFixed(2) + ' A ' + rx.toFixed(2) + ',' + ry.toFixed(2) + ' 0 0,0 ' + (cx+dx).toFixed(2) + ',' + boxBot.toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="2"/>';
+  }
+}
+
+function centreArc(goalEnd, skip){
+  if(skip) return '';
+  const cx=fx(0.5), rx=ARC_R*PW, ry=ARC_R*PH;
+  if(goalEnd==="bottom"){
+    const y=fy(0);
+    return '<path d="M ' + (cx-rx).toFixed(2) + ',' + y.toFixed(2) + ' A ' + rx.toFixed(2) + ',' + ry.toFixed(2) + ' 0 0,1 ' + (cx+rx).toFixed(2) + ',' + y.toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="1.5"/>';
+  } else {
+    const y=fy(1);
+    return '<path d="M ' + (cx+rx).toFixed(2) + ',' + y.toFixed(2) + ' A ' + rx.toFixed(2) + ',' + ry.toFixed(2) + ' 0 0,1 ' + (cx-rx).toFixed(2) + ',' + y.toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="1.5"/>';
+  }
+}
+
+function halfFieldBottom(){
+  const cx=fx(0.5), gy=fy(1);
+  const bw=mw(BOX_W), bd=mh(BOX_D), bx1=cx-bw/2, byt=gy-bd;
+  const sw=mw(SIX_W), sd=mh(SIX_D), sx1=cx-sw/2;
+  const gw=mw(GOAL_W), gx1=cx-gw/2;
+  let s='<line x1="' + FX + '" y1="' + fy(0).toFixed(2) + '" x2="' + (FX+FW) + '" y2="' + fy(0).toFixed(2) + '" stroke="' + lc + '" stroke-width="1.5"/>';
+  s+='<rect x="' + bx1.toFixed(2) + '" y="' + byt.toFixed(2) + '" width="' + bw.toFixed(2) + '" height="' + bd.toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="2"/>';
+  s+='<rect x="' + sx1.toFixed(2) + '" y="' + (gy-sd).toFixed(2) + '" width="' + sw.toFixed(2) + '" height="' + sd.toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="1.5"/>';
+  s+='<circle cx="' + cx.toFixed(2) + '" cy="' + (gy-mh(PEN_D)).toFixed(2) + '" r="3.5" fill="' + lc + '"/>';
+  s+=penaltyD("bottom");
+  s+='<rect x="' + gx1.toFixed(2) + '" y="' + gy.toFixed(2) + '" width="' + gw.toFixed(2) + '" height="20" fill="none" stroke="' + lc + '" stroke-width="2.5"/>';
+  s+=centreArc("bottom",false); s+=cornerArcs("bottom");
+  return s;
+}
+
+function halfFieldTop(skipCentreArc){
+  const cx=fx(0.5), gy=fy(0);
+  const bw=mw(BOX_W), bd=mh(BOX_D), bx1=cx-bw/2;
+  const sw=mw(SIX_W), sd=mh(SIX_D), sx1=cx-sw/2;
+  const gw=mw(GOAL_W), gx1=cx-gw/2;
+  let s='<line x1="' + FX + '" y1="' + fy(1).toFixed(2) + '" x2="' + (FX+FW) + '" y2="' + fy(1).toFixed(2) + '" stroke="' + lc + '" stroke-width="1.5"/>';
+  s+='<rect x="' + bx1.toFixed(2) + '" y="' + gy.toFixed(2) + '" width="' + bw.toFixed(2) + '" height="' + bd.toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="2"/>';
+  s+='<rect x="' + sx1.toFixed(2) + '" y="' + gy.toFixed(2) + '" width="' + sw.toFixed(2) + '" height="' + sd.toFixed(2) + '" fill="none" stroke="' + lc + '" stroke-width="1.5"/>';
+  s+='<circle cx="' + cx.toFixed(2) + '" cy="' + (gy+mh(PEN_D)).toFixed(2) + '" r="3.5" fill="' + lc + '"/>';
+  s+=penaltyD("top");
+  s+='<rect x="' + gx1.toFixed(2) + '" y="' + (gy-20).toFixed(2) + '" width="' + gw.toFixed(2) + '" height="20" fill="none" stroke="' + lc + '" stroke-width="2.5"/>';
+  s+=centreArc("top", skipCentreArc); s+=cornerArcs("top");
+  return s;
+}
+
+function mkPlayer(cx,cy,num,color,txtColor,r,strokeW,strokeColor){
+  txtColor=txtColor||"#fff"; r=r||18; strokeW=strokeW||2; strokeColor=strokeColor||"rgba(255,255,255,0.8)";
+  return '<g class="player-dot" data-num="' + num + '" onclick="selectPlayer(' + num + ')" style="cursor:pointer">' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + color + '" stroke="' + strokeColor + '" stroke-width="' + strokeW + '"/>' +
+    '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="middle" font-family="\'Barlow Condensed\',sans-serif" font-weight="800" font-size="13" fill="' + txtColor + '">' + num + '</text>' +
+    '</g>';
+}
+
+function arrowDef(id,color){ return '<marker id="' + id + '" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="' + color + '"/></marker>'; }
+
+function mkArrow(x1,y1,x2,y2,color,id,dash,sw){
+  dash=dash||""; sw=sw||2.5;
+  return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + color + '" stroke-width="' + sw + '" ' + (dash?'stroke-dasharray="' + dash + '"':'') + ' marker-end="url(#' + id + ')"/>';
+}
+
+function badge(cx, cy, text, fill, w, h, size){
+  w=w||180; h=h||20; size=size||10;
+  return '<rect x="' + (cx-w/2).toFixed(2) + '" y="' + (cy-h/2).toFixed(2) + '" width="' + w + '" height="' + h + '" fill="' + fill + '" rx="4" opacity="0.92"/>' +
+    '<text x="' + cx.toFixed(2) + '" y="' + cy.toFixed(2) + '" text-anchor="middle" dominant-baseline="middle" font-family="Arial,sans-serif" font-size="' + size + '" font-weight="bold" fill="#fff">' + text + '</text>';
+}
+
+function buildDefBase(){
+  const cx=fx(0.5), gy=fy(1);
+  const sixTopY=gy-mh(SIX_D), boxTopY=gy-mh(BOX_D), penY=gy-mh(PEN_D);
+  const midY=(sixTopY+penY)/2;
+  const sixL=cx-mw(SIX_W/2), sixR=cx+mw(SIX_W/2);
+  const boxL=cx-mw(BOX_W/2);
+  let s=fieldBase()+halfFieldBottom();
+  s+='<circle cx="' + fx(1).toFixed(2) + '" cy="' + gy.toFixed(2) + '" r="9" fill="#fff" stroke="#444" stroke-width="1.5"/>';
+  s+=mkPlayer(cx, gy-mh(0.5), 1, "#16a349");
+  s+=mkPlayer(cx-mw(GOAL_W/2+1.5), gy-mh(0.4), 3, "#B22222");
+  s+=mkPlayer(cx+mw(GOAL_W/2+1.5), gy-mh(0.4), 2, "#B22222");
+  s+=mkPlayer(sixL, sixTopY, 6, "#B22222");
+  s+=mkPlayer(cx,   sixTopY, 5, "#B22222");
+  s+=mkPlayer(sixR, sixTopY, 4, "#B22222");
+  s+=mkPlayer((sixL+cx)/2, midY, 8, "#B22222");
+  s+=mkPlayer((cx+sixR)/2, midY, 7, "#B22222");
+  const mm10x=boxL+mw(5), mm9x=boxL+mw(10), mmY=boxTopY+mh(4);
+  s+='<rect x="' + (mm10x-24).toFixed(2) + '" y="' + (mmY-22).toFixed(2) + '" width="' + (mm9x-mm10x+46).toFixed(2) + '" height="44" fill="none" stroke="#C9A227" stroke-width="2" rx="4"/>';
+  s+=mkPlayer(mm10x, mmY, 10, "#C9A227");
+  s+=mkPlayer(mm9x,  mmY,  9, "#C9A227");
+  s+=mkPlayer(cx-mw(8), fy(0.18), 11, "#B22222");
+  s+=badge(mm10x+mw(3), mmY-mh(6), "MAN MARKERS (#9, #10)", "#C9A227", 195);
+  return s;
+}
+
+function buildDefShort(){
+  const cx=fx(0.5), gy=fy(1);
+  const sixTopY=gy-mh(SIX_D), boxTopY=gy-mh(BOX_D), penY=gy-mh(PEN_D);
+  const midY=(sixTopY+penY)/2;
+  const sixL=cx-mw(SIX_W/2), sixR=cx+mw(SIX_W/2);
+  const boxL=cx-mw(BOX_W/2), boxR=cx+mw(BOX_W/2);
+  const base={4:[sixR,sixTopY],5:[cx,sixTopY],6:[sixL,sixTopY],7:[(cx+sixR)/2,midY],8:[(sixL+cx)/2,midY]};
+  const newp={4:[boxR+mw(11),gy-mh(3)],5:[sixR,sixTopY],6:[cx,sixTopY],8:[sixL,sixTopY],7:[cx,midY]};
+  let s='<defs>' + arrowDef("ag2","#C9A227") + arrowDef("ar2","#E53935") + '</defs>';
+  s+=fieldBase()+halfFieldBottom();
+  s+='<circle cx="' + fx(1).toFixed(2) + '" cy="' + gy.toFixed(2) + '" r="9" fill="#fff" stroke="#444" stroke-width="1.5"/>';
+  [4,5,6,7,8].forEach(function(n){
+    var ox=base[n][0], oy=base[n][1];
+    s+='<circle cx="' + ox.toFixed(2) + '" cy="' + oy.toFixed(2) + '" r="19" fill="rgba(180,30,30,0.10)" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>';
+    s+='<text x="' + ox.toFixed(2) + '" y="' + oy.toFixed(2) + '" text-anchor="middle" dominant-baseline="middle" font-family="Arial,sans-serif" font-size="12" fill="rgba(255,255,255,0.18)">' + n + '</text>';
+  });
+  s+=mkArrow(base[4][0],base[4][1],newp[4][0],newp[4][1],"#E53935","ar2","6 4",3);
+  [5,6,7,8].forEach(function(n){ s+=mkArrow(base[n][0],base[n][1],newp[n][0],newp[n][1],"#C9A227","ag2","7 4",2); });
+  s+=mkPlayer(cx, gy-mh(0.5), 1, "#16a349");
+  s+=mkPlayer(cx-mw(GOAL_W/2+1.5), gy-mh(0.4), 3, "#B22222");
+  s+=mkPlayer(cx+mw(GOAL_W/2+1.5), gy-mh(0.4), 2, "#B22222");
+  s+=mkPlayer(newp[8][0], newp[8][1], 8, "#B22222");
+  s+=mkPlayer(newp[6][0], newp[6][1], 6, "#B22222");
+  s+=mkPlayer(newp[5][0], newp[5][1], 5, "#B22222");
+  s+=mkPlayer(newp[7][0], newp[7][1], 7, "#B22222");
+  s+=mkPlayer(newp[4][0], newp[4][1], 4, "#E53935");
+  const mm10x=boxL+mw(5), mm9x=boxL+mw(10), mmY=boxTopY+mh(4);
+  s+='<rect x="' + (mm10x-24).toFixed(2) + '" y="' + (mmY-22).toFixed(2) + '" width="' + (mm9x-mm10x+46).toFixed(2) + '" height="44" fill="none" stroke="#C9A227" stroke-width="2" rx="4"/>';
+  s+=mkPlayer(mm10x, mmY, 10, "#C9A227");
+  s+=mkPlayer(mm9x,  mmY,  9, "#C9A227");
+  s+=mkPlayer(cx-mw(8), fy(0.18), 11, "#B22222");
+  s+=badge(newp[4][0]-mw(4), newp[4][1]-mh(5.5), "#4 PRESSES TO ENDLINE", "#E53935", 195);
+  s+=badge(mm10x+mw(3), mmY-mh(6), "MAN MARKERS (#9, #10)", "#C9A227", 195);
+  return s;
+}
+
+function buildAtkCorners(){
+  const cx=fx(0.5), gy=fy(0), bw=mw(BOX_W), bd=mh(BOX_D);
+  const cornerX=fx(1), cornerY=fy(0);
+  const sixBotY=gy+mh(SIX_D);
+  const p10=[cornerX, cornerY+mh(2.5)];
+  const p11=[cornerX-mw(5), cornerY+mh(2.5)];
+  const p9=[cx-mw(SIX_W/2)-mw(1), sixBotY+mh(1)];
+  const p8=[p9[0]-mw(2), p9[1]+mh(3.5)];
+  const p7=[p8[0]-mw(2), p8[1]+mh(3.5)];
+  const p6=[p7[0]-mw(2), p7[1]+mh(3.5)];
+  const p5=[cx, gy+mh(PEN_D)];
+  const p3=[cx+bw/2+mw(6), gy+mh(27)];
+  const p2=[cx, fy(0.70)];
+  const p4=[cx, fy(0.82)];
+  let s='<defs>';
+  s+='<marker id="aw2" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="rgba(255,255,255,0.85)"/></marker>';
+  s+='<marker id="agc" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#C9A227"/></marker>';
+  s+='</defs>';
+  s+=fieldBase()+halfFieldTop(true);
+  s+='<path d="M' + cornerX.toFixed(1) + ',' + cornerY.toFixed(1) + ' Q' + fx(0.55).toFixed(1) + ',' + fy(0.20).toFixed(1) + ' ' + (p9[0]+mw(2)).toFixed(1) + ',' + (p9[1]-mh(2)).toFixed(1) + '" fill="none" stroke="rgba(255,255,255,0.80)" stroke-width="2.5" marker-end="url(#aw2)"/>';
+  s+='<circle cx="' + p5[0].toFixed(1) + '" cy="' + p5[1].toFixed(1) + '" r="26" fill="rgba(107,45,139,0.18)" stroke="#6B2D8B" stroke-width="2" stroke-dasharray="5 3"/>';
+  s+='<line x1="' + (cornerX-mw(1)).toFixed(1) + '" y1="' + (cornerY+mh(2)).toFixed(1) + '" x2="' + p3[0].toFixed(1) + '" y2="' + p3[1].toFixed(1) + '" stroke="rgba(201,162,39,0.65)" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#agc)"/>';
+  s+=mkPlayer(p4[0],p4[1],4,"#1A4A8A");
+  s+=mkPlayer(p2[0],p2[1],2,"#1A4A8A");
+  s+=mkPlayer(p3[0],p3[1],3,"#B22222");
+  s+=mkPlayer(p5[0],p5[1],5,"#6B2D8B");
+  s+=mkPlayer(p6[0],p6[1],6,"#B22222");
+  s+=mkPlayer(p7[0],p7[1],7,"#B22222");
+  s+=mkPlayer(p8[0],p8[1],8,"#B22222");
+  s+=mkPlayer(p9[0],p9[1],9,"#B22222");
+  s+=mkPlayer(p10[0],p10[1],10,"#555");
+  s+=mkPlayer(p11[0],p11[1],11,"#555");
+  s+=mkPlayer(cx,gy+mh(0.8),1,"#16a349");
+  s+='<circle cx="' + cornerX.toFixed(1) + '" cy="' + cornerY.toFixed(1) + '" r="8" fill="#fff" stroke="#444" stroke-width="1.5"/>';
+  s+=badge(p5[0]+mw(9), p5[1], "BLOCKER (#5)", "#6B2D8B", 112);
+  s+=badge(p9[0]-mw(12), p9[1]-mh(5), "PRIMARY TARGET (#6–9)", "#C9A227", 185);
+  s+=badge(p3[0]-mw(2), p3[1]+mh(4.5), "#3 angle option", "#1A6B3C", 130);
+  s+=badge(p4[0]+mw(9), p4[1]-mh(1), "Defensive pair", "#1A4A8A", 115);
+  return s;
+}
+
+function buildFreeKick(){
+  const cx=fx(0.5), gy=fy(0);
+  const bw=mw(BOX_W);
+  const ballX=cx-mw(9), ballY=gy+mh(24);
+  const wallY=ballY-mh(9.5);
+  const wallCx=(ballX+cx)/2;
+  let s='<defs>';
+  s+='<marker id="fkgd" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#C9A227"/></marker>';
+  s+='<marker id="fkrd" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#B22222"/></marker>';
+  s+='</defs>';
+  s+=fieldBase()+halfFieldTop(false);
+  const wallXs=[-2,-1,0,1,2].map(function(i){ return wallCx+mw(i*1.4); });
+  wallXs.forEach(function(wx){
+    s+='<rect x="' + (wx-12).toFixed(1) + '" y="' + (wallY-12).toFixed(1) + '" width="24" height="24" fill="#4A90D9" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" rx="3"/>';
+    s+='<text x="' + wx.toFixed(1) + '" y="' + wallY.toFixed(1) + '" text-anchor="middle" dominant-baseline="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#fff">O</text>';
+  });
+  const p5x=wallXs[0]-mw(2.5), p5y=wallY;
+  const p6x=wallXs[4]+mw(2.5), p6y=wallY;
+  const p7x=cx-bw/2-mw(3.5),  p7y=wallY;
+  const p11x=cx+bw/2+mw(3.5), p11y=wallY;
+  const p8x=ballX+mw(1.5), p8y=ballY;
+  const p10x=ballX-mw(3),  p10y=ballY;
+  const p9x=ballX-mw(1),   p9y=ballY+mh(8);
+  const p4x=ballX+mw(7),   p4y=ballY+mh(5);
+  const p3x=cx+mw(15),     p3y=gy+mh(20);
+  const p2x=cx, p2y=fy(0.88);
+  s+='<line x1="' + (p8x-mw(1)).toFixed(1) + '" y1="' + p8y.toFixed(1) + '" x2="' + (p10x+mw(0.5)).toFixed(1) + '" y2="' + p10y.toFixed(1) + '" stroke="#C9A227" stroke-width="2.5" marker-end="url(#fkgd)"/>';
+  s+='<line x1="' + p10x.toFixed(1) + '" y1="' + (p10y-mh(0.5)).toFixed(1) + '" x2="' + p9x.toFixed(1) + '" y2="' + (p9y+mh(1)).toFixed(1) + '" stroke="#C9A227" stroke-width="2.5" marker-end="url(#fkgd)"/>';
+  s+='<path d="M' + p9x.toFixed(1) + ',' + (p9y-mh(1)).toFixed(1) + ' Q' + (cx-mw(4)).toFixed(1) + ',' + (gy+mh(12)).toFixed(1) + ' ' + (cx-mw(2)).toFixed(1) + ',' + (gy+mh(1.5)).toFixed(1) + '" fill="none" stroke="#B22222" stroke-width="3" marker-end="url(#fkrd)"/>';
+  s+='<path d="M' + p10x.toFixed(1) + ',' + p10y.toFixed(1) + ' Q' + (cx-mw(6)).toFixed(1) + ',' + (gy+mh(10)).toFixed(1) + ' ' + (cx-mw(2)).toFixed(1) + ',' + (gy+mh(1.5)).toFixed(1) + '" fill="none" stroke="rgba(201,162,39,0.28)" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#fkgd)"/>';
+  s+=mkPlayer(p5x, p5y, 5, "#C9A227");
+  s+=mkPlayer(p6x, p6y, 6, "#C9A227");
+  s+=mkPlayer(p7x, p7y, 7, "#B22222");
+  s+=mkPlayer(p11x,p11y,11,"#B22222");
+  s+=mkPlayer(p9x, p9y, 9, "#B22222");
+  s+=mkPlayer(p4x, p4y, 4, "#B22222");
+  s+=mkPlayer(p3x, p3y, 3, "#B22222");
+  s+=mkPlayer(p8x, p8y, 8, "#B22222");
+  s+=mkPlayer(p10x,p10y,10,"#B22222");
+  s+=mkPlayer(p2x, p2y, 2, "#B22222");
+  s+=mkPlayer(cx, gy+mh(0.8), 1, "#16a349");
+  s+='<circle cx="' + ballX.toFixed(1) + '" cy="' + ballY.toFixed(1) + '" r="9" fill="#fff" stroke="#444" stroke-width="1.5"/>';
+  const lblX=cx+mw(22), lblY=gy+mh(7);
+  s+=badge(lblX, lblY,        "A: #8 to #10, #9 runs + shoots", "#1A6B3C", 200);
+  s+=badge(lblX, lblY+mh(5),  "B: #10 shoots direct",           "#C9A227", 200);
+  s+=badge(lblX, lblY+mh(10), "#5, #6 flank wall",              "#C9A227", 200);
+  s+=badge(lblX, lblY+mh(15), "#7, #11 wide of box",            "#B22222", 200);
+  return s;
+}
+
+function buildWall(){
+  const cx=fx(0.5), gy=fy(1);
+  const bw=mw(BOX_W);
+  const bx1=cx-bw/2, bx2=cx+bw/2;
+  const sx1_=cx-mw(SIX_W/2), sx2_=cx+mw(SIX_W/2);
+  const boxTopY=gy-mh(BOX_D), sixTopY=gy-mh(SIX_D), penY_=gy-mh(PEN_D);
+  const halfway=fy(0);
+  let s=fieldBase()+halfFieldBottom();
+  const lw='rgba(255,255,255,0.75)';
+  const sL2=(boxTopY-gy)/(bx1-cx);
+  const L2exitY=gy+sL2*(FX-cx);
+  const circleEdgeX=cx-ARC_R*PW;
+  const L3leftX=(FX+circleEdgeX)/2;
+  const L3rightX=2*cx-L3leftX;
+  [[FX,sixTopY],[FX,L2exitY],[L3leftX,halfway],[FX+FW,sixTopY],[FX+FW,L2exitY],[L3rightX,halfway]]
+    .forEach(function(pt){
+      var tx=pt[0], ty=pt[1];
+      s+='<line x1="' + cx.toFixed(1) + '" y1="' + gy.toFixed(1) + '" x2="' + tx.toFixed(1) + '" y2="' + ty.toFixed(1) + '" stroke="' + lw + '" stroke-width="2" stroke-dasharray="9 5"/>';
+    });
+  var hc='rgba(255,255,255,0.60)';
+  [gy-mh(38),gy-mh(26)].forEach(function(hy){
+    s+='<line x1="' + FX + '" y1="' + hy.toFixed(1) + '" x2="' + (FX+FW) + '" y2="' + hy.toFixed(1) + '" stroke="' + hc + '" stroke-width="1.5" stroke-dasharray="8 5"/>';
+  });
+  function zl(x,y,t){
+    return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" font-family="Arial,sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">' + t + '</text>';
+  }
+  var mir=function(x){ return 2*cx-x; };
+  var L2x=function(y){ return cx+(y-gy)/(L2exitY-gy)*(FX-cx); };
+  var L3x=function(y){ return cx+(y-gy)/(halfway-gy)*(FX-cx); };
+  var yCK=gy-mh(1.5), y3=gy-mh(1.2), y45i=gy-mh(4.0);
+  var y5pu=(boxTopY+sixTopY)/2;
+  var yAb=(boxTopY+gy-mh(26))/2;
+  var yBH=(gy-mh(38)+gy-mh(26))/2;
+  var yTop=(halfway+gy-mh(38))/2;
+  var x3L=(bx1+sx1_)/2;
+  var x5pL=cx-mw(9), x5pR=cx+mw(9);
+  var x34L=(FX+bx1)/2;
+  var x45wL=(L2x(yAb)+L3x(yAb))/2;
+  var x1bL=(FX+L3x(yBH))/2;
+  var x1tL=x1bL;
+  s+=zl(FX+mw(3),yCK,"CK"); s+=zl(mir(FX+mw(3)),yCK,"CK");
+  s+=zl(x3L,y3,"3"); s+=zl(mir(x3L),y3,"3");
+  s+=zl(x3L,y45i,"4-5"); s+=zl(mir(x3L),y45i,"4-5");
+  s+=zl(x34L,y5pu,"3-4"); s+=zl(mir(x34L),y5pu,"3-4");
+  s+=zl(x5pL,y5pu,"5+"); s+=zl(cx,y5pu,"5+"); s+=zl(x5pR,y5pu,"5+");
+  s+=zl(x45wL,yAb,"4-5"); s+=zl(cx,yAb,"5"); s+=zl(mir(x45wL),yAb,"4-5");
+  s+=zl(x1bL,yBH,"1"); s+=zl(cx,yBH,"1-2"); s+=zl(mir(x1bL),yBH,"1");
+  s+=zl(x1tL,yTop,"1"); s+=zl(cx,yTop,"1"); s+=zl(mir(x1tL),yTop,"1");
+  s+='<circle cx="' + (cx-mw(GOAL_W/2)).toFixed(1) + '" cy="' + gy.toFixed(1) + '" r="5" fill="#C9A227" stroke="#fff" stroke-width="1.5"/>';
+  s+='<circle cx="' + (cx+mw(GOAL_W/2)).toFixed(1) + '" cy="' + gy.toFixed(1) + '" r="5" fill="#C9A227" stroke="#fff" stroke-width="1.5"/>';
+  s+=mkPlayer(cx, gy-mh(0.8), 1, "#16a349");
+  return s;
+}
+
+function buildGrid(containerId, roles, accentColor){
+  var el=document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML=Object.entries(roles).map(function(entry){
+    var num=entry[0], r=entry[1];
+    return '<div class="player-card" id="card-' + containerId + '-' + num + '" onclick="selectPlayerFrom(\'' + containerId + '\',' + num + ',\'' + accentColor + '\')">' +
+      '<div class="pc-head"><div class="pc-num" style="background:' + accentColor + '">' + num + '</div><div class="pc-role">' + r.role + '</div></div>' +
+      '<div class="pc-duties"><ul>' + r.duties.map(function(d){ return '<li>' + d + '</li>'; }).join('') + '</ul></div></div>';
+  }).join('');
+}
+
+function selectPlayer(num){
+  var pane=document.querySelector('.pane.active');
+  var paneId=pane.id.replace('pane-','');
+  var map={'def-corners':{roles:DEF_ROLES,infoId:'def-info',accentColor:'#1A6B3C'},'atk-corners':{roles:ATK_ROLES,infoId:'atk-info',accentColor:'#6B2D8B'},'freekick':{roles:FK_ROLES,infoId:'fk-info',accentColor:'#C9A227'}};
+  if(!map[paneId]) return;
+  var cfg=map[paneId];
+  showInfo(cfg.infoId, num, cfg.roles, cfg.accentColor);
+  document.querySelectorAll('#' + pane.id + ' .player-card').forEach(function(c){ c.classList.toggle('selected', c.id.endsWith('-'+num)); });
+}
+
+function selectPlayerFrom(containerId, num, accentColor){
+  var map={'def-grid':{roles:DEF_ROLES,infoId:'def-info'},'atk-grid':{roles:ATK_ROLES,infoId:'atk-info'},'fk-grid':{roles:FK_ROLES,infoId:'fk-info'}};
+  if(!map[containerId]) return;
+  var cfg=map[containerId];
+  showInfo(cfg.infoId, num, cfg.roles, accentColor);
+  document.querySelectorAll('#' + containerId + ' .player-card').forEach(function(c){ c.classList.toggle('selected', c.id.endsWith('-'+num)); });
+}
+
+function showInfo(infoId, num, roles, accentColor){
+  var panel=document.getElementById(infoId);
+  if(!panel) return;
+  panel.style.borderLeftColor=accentColor;
+  var r=roles[num];
+  if(!r){ panel.innerHTML='<p class="info-hint">No data for this player in this set piece</p>'; return; }
+  panel.innerHTML='<div style="display:flex;align-items:baseline;gap:0.6rem;margin-bottom:0.3rem"><span class="player-num" style="color:' + accentColor + '">#' + num + '</span><span class="player-role">' + r.role + '</span></div><ul>' + r.duties.map(function(d){ return '<li>' + d + '</li>'; }).join('') + '</ul>';
+}
+
+function showDefDiagram(mode, btn){
+  document.querySelectorAll('#pane-def-corners .toggle-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('def-diagram').innerHTML=wrapSVG(mode==='base'?buildDefBase():buildDefShort());
+  document.getElementById('def-info').innerHTML='<p class="info-hint">Tap a player number on the diagram above</p>';
+}
+
+function wrapSVG(body){
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">' + body + '</svg>';
+}
+
+function init(){
+  document.getElementById('def-diagram').innerHTML  = wrapSVG(buildDefBase());
+  document.getElementById('atk-diagram').innerHTML  = wrapSVG(buildAtkCorners());
+  document.getElementById('fk-diagram').innerHTML   = wrapSVG(buildFreeKick());
+  document.getElementById('wall-diagram').innerHTML = wrapSVG(buildWall());
+  buildGrid('def-grid',  DEF_ROLES, '#1A6B3C');
+  buildGrid('atk-grid',  ATK_ROLES, '#6B2D8B');
+  buildGrid('fk-grid',   FK_ROLES,  '#C9A227');
+  document.getElementById('navTabs').addEventListener('click', function(e){
+    var btn=e.target.closest('.nav-tab');
+    if(!btn) return;
+    document.querySelectorAll('.nav-tab').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.pane').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('pane-'+btn.dataset.pane).classList.add('active');
+  });
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
